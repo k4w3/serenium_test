@@ -26,17 +26,17 @@ print("CSVファイルの存在を監視中...")
 def process_file(filepath):
     try:
         filename = os.path.basename(filepath)
-        name_without_ext = os.path.splitext(filename)[0]
-        output_file_path = os.path.join(OUTPUT_DIR, f"{name_without_ext}_output.csv")
-        result_file_path = os.path.join(RESULT_DIR, f"{name_without_ext}_output.csv")
+        nameonly = os.path.splitext(filename)[0]
+        output_file_path = os.path.join(OUTPUT_DIR, f"{nameonly}_output.csv")
+        result_file_path = os.path.join(RESULT_DIR, f"{nameonly}_output.csv")
 
         print(f"[INFO] 処理開始: {filename}")
 
         # CSV読み込み
-        df = pd.read_csv(filepath, header=None)
-        print(f"[INFO] CSVデータ: {df}")
-        first_name = df.iloc[0, 0]
-        last_name = df.iloc[0, 1]
+        dataframe = pd.read_csv(filepath, header=None)
+        print(f"[INFO] CSVデータ: {dataframe}")
+        first_name = dataframe.iloc[0, 0]
+        last_name = dataframe.iloc[0, 1]
 
         # 「First Name」欄に入力
         first_name_input = driver.find_element(By.ID, "firstname")
@@ -48,7 +48,7 @@ def process_file(filepath):
         last_name_input.clear()
         last_name_input.send_keys(last_name)
 
-        # 各ラベルをコピー
+        # 各ラベルのtextを取得
         time.sleep(0.3)  # サーバからの応答速度に応じて要調整
         full_name_label = driver.find_element(By.XPATH, "//label[text()='Full Name']").text
         father_name_label = driver.find_element(By.XPATH, "//label[text()='Father Name']").text
@@ -56,8 +56,8 @@ def process_file(filepath):
 
         # outputファイルの作成(CSV)
         output_data = [full_name_label, father_name_label, mother_name_label]
-        output_df = pd.DataFrame([output_data])
-        output_df.to_csv(output_file_path, index=False, header=False, mode='a')
+        output_dataframe = pd.DataFrame([output_data])
+        output_dataframe.to_csv(output_file_path, index=False, header=False, mode='a')
         print(f"[INFO] 取得データ: {output_data}")
 
         # resultフォルダに移動
